@@ -10,6 +10,9 @@ alias a2="cd ~/git/aladdin2"
 alias cde="cd /exp/$(whoami)"
 alias cdt="cd ~/tb"
 alias cdn="cd ~/notebooks"
+alias b="cd ~/git/bladdin"
+alias c="cd ~/git/claddin"
+alias lla="cd ~/git/llava"
 
 # Perish machines
 alias p1="cd /perish_aml01"
@@ -45,6 +48,7 @@ function pless () { pcat $@ | less; }
 
 # Misc
 alias jp="jupyter lab --no-browser --ip $HOST_IP_ADDR"
+alias tb="tensorboard --reload_multifile true --logdir=$PWD --reload_interval 3 --extra_data_server_flags=--no-checksum --max_reload_threads 4 --window_title $PWD"
 alias ls='ls -hF --color' # add colors for filetype recognition
 alias nv='nvidia-smi'
 
@@ -83,7 +87,6 @@ tblink () {
         _linkdirs "$logdir" "$@"
     fi
     tensorboard \
-      --host=$HOST_IP_ADDR \
       --reload_multifile true \
       --logdir="$logdir" \
       --reload_interval 8 \
