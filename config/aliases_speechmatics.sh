@@ -47,8 +47,8 @@ alias ptail="[ -z '$SINGULARITY_CONTAINER' ] && echo $PARQUET_ENV_ERROR_MESSAGE 
 function pless () { pcat $@ | less; }
 
 # Misc
-alias jp="jupyter lab --no-browser --ip $HOST_IP_ADDR"
-alias tb="tensorboard --reload_multifile true --logdir=$PWD --reload_interval 3 --extra_data_server_flags=--no-checksum --max_reload_threads 4 --window_title $PWD"
+alias jp="jupyter lab --no-browser --ip 0.0.0.0"
+alias tb="tensorboard --reload_multifile true --bind_all  --logdir=$PWD --reload_interval 3 --extra_data_server_flags=--no-checksum --max_reload_threads 4 --window_title $PWD"
 alias ls='ls -hF --color' # add colors for filetype recognition
 alias nv='nvidia-smi'
 
@@ -89,10 +89,10 @@ tblink () {
     tensorboard \
       --reload_multifile true \
       --logdir="$logdir" \
+      --bind_all \
       --reload_interval 8 \
-      --extra_data_server_flags=--no-checksum \
       --max_reload_threads 4 \
-      --window_title $PWD
+      --window_title $PWD 
 }
 _linkdirs() {
     logdir="$1"
