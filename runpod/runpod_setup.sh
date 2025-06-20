@@ -22,5 +22,6 @@ chsh -s /usr/bin/zsh
 ./deploy.sh
 cd ..
 
+zsh
 # 4) Setup github
 echo ./scripts/setup_github.sh "murray@seoirse.net" "Seoirse Murray"
