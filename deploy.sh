@@ -48,4 +48,8 @@ echo "source $DOT_DIR/config/zshrc.sh" > $HOME/.zshrc
 [ $LOC = 'remote' ] &&  echo \
     "source $DOT_DIR/config/aliases_speechmatics.sh" >> $HOME/.zshrc
 
+# Add this line:
+echo "changing default shell to zsh"
+chsh -s $(which zsh)
+
 zsh
