@@ -50,8 +50,8 @@ if [ $machine == "Linux" ]; then
 elif [ $machine == "Mac" ]; then
     brew install coreutils  # Mac won't have realpath before coreutils installed
     DOT_DIR=$(dirname $(realpath $0))
-    [ $zsh == true ] && brew install -y zsh
-    [ $tmux == true ] && brew install -y tmux
+    [ $zsh == true ] && brew install zsh
+    [ $tmux == true ] && brew install tmux
 fi
 
 # Setting up oh my zsh and oh my zsh plugins
