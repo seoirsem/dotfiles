@@ -26,7 +26,6 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBTEPxGu3rom7b9jPh53v6ftHQQx97xmLEyOWXyEUgS3
 # John's SSH key  
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDALrWAPgezK+pQSSpFT5KpeqAT5B9glizzHC5mpM0Zg jpl.hughes288@gmail.com
 
-
 EOF
     
     # Set proper permissions
@@ -35,6 +34,7 @@ EOF
     
     echo "✅ SSH access limited to specified keys"
 }
+setup_ssh_access
 
 # 1) Setup SSH key
 if [ ! -f ~/.ssh/id_ed25519 ]; then
