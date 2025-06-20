@@ -20,6 +20,8 @@ cd dotfiles
 ./install.sh --zsh --tmux
 chsh -s /usr/bin/zsh
 ./deploy.sh
+#use ssh - better for later
+git remote set-url origin git@github.com:seoirsem/dotfiles.git
 cd ..
 
 zsh
