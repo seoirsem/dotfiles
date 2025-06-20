@@ -15,19 +15,15 @@ git config --global user.name "$name"
 # Add to your setup script
 setup_ssh_access() {
     echo "🔒 Securing SSH access..."
-    
     # Backup current keys
     cp ~/.ssh/authorized_keys ~/.ssh/authorized_keys.backup
-    
     # Create new authorized_keys with only your keys
     cat > ~/.ssh/authorized_keys << 'EOF'
 # Your SSH key (from runpod)
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBTEPxGu3rom7b9jPh53v6ftHQQx97xmLEyOWXyEUgS3 murray@seoirse.net
 # John's SSH key  
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDALrWAPgezK+pQSSpFT5KpeqAT5B9glizzHC5mpM0Zg jpl.hughes288@gmail.com
-
 EOF
-    
     # Set proper permissions
     chmod 600 ~/.ssh/authorized_keys
     chmod 700 ~/.ssh

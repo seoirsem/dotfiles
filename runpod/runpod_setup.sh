@@ -25,5 +25,8 @@ git remote set-url origin git@github.com:seoirsem/dotfiles.git
 cd ..
 
 zsh
+export CUDA_VISIBLE_DEVICES=all
+
 # 4) Setup github
+echo "To setup github auth, run:"
 echo ./scripts/setup_github.sh "murray@seoirse.net" "Seoirse Murray"
