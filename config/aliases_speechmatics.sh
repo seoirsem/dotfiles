@@ -12,7 +12,7 @@ alias cdt="cd ~/tb"
 alias cdn="cd ~/notebooks"
 alias b="cd ~/git/bladdin"
 alias c="cd ~/git/chunky-post-training"
-
+alias w="cd /workspace"
 # Perish machines
 alias p1="cd /perish_aml01"
 alias p2="cd /perish_aml02"
