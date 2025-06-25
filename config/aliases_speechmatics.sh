@@ -11,8 +11,7 @@ alias cde="cd /exp/$(whoami)"
 alias cdt="cd ~/tb"
 alias cdn="cd ~/notebooks"
 alias b="cd ~/git/bladdin"
-alias c="cd ~/git/claddin"
-alias lla="cd ~/git/llava"
+alias c="cd ~/git/chunky-post-training"
 
 # Perish machines
 alias p1="cd /perish_aml01"
