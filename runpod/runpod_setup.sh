@@ -13,6 +13,16 @@ source .venv/bin/activate
 uv pip install ipykernel simple-gpu-scheduler # very useful on runpod with multi-GPUs https://pypi.org/project/simple-gpu-scheduler/
 python -m ipykernel install --user --name=venv # so it shows up in jupyter notebooks within vscode
 
+# Install Claude Code
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 22
+node -v # Should print "v22.17.0".
+nvm current # Should print "v22.17.0".
+npm -v # Should print "10.9.2".
+
+npm install -g @anthropic-ai/claude-code
+
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
