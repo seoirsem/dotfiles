@@ -11,3 +11,21 @@ source $ZSH/oh-my-zsh.sh
 source $CONFIG_DIR/aliases.sh
 source $CONFIG_DIR/p10k.zsh
 source $CONFIG_DIR/extras.sh
+
+# Fighter jet ASCII art
+echo "                             |"
+echo "                       --====|====--"
+echo "                             |"
+echo ""
+echo "                         .-\"\"\"\"\"-."
+echo "                       .'_________'."
+echo "                      /_/_|__|__|_\_\\"
+echo "                     ;'-._       _.-';"
+echo ",--------------------|    \`-. .-'    |--------------------,"
+echo " \`\`\"\"--..__    ___   ;       '       ;   ___    __..--\"\"\`\`"
+echo "           \`\"-// \\\\.._\\             /_..// \\\\-\"\`"
+echo "              \\\\_//    '._       _.'    \\\\_//"
+echo "               \`\"\`        \`\`---\`\`        \`\"\`"
+echo ""
+echo ""
+echo ""
