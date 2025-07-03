@@ -2,7 +2,7 @@
 # General and Navigation
 # -------------------------------------------------------------------
 
-HOST_IP_ADDR=$(hostname -I | awk '{ print $1 }') # This gets the actual ip addr
+HOST_IP_ADDR=$(ip route get 1 2>/dev/null | awk '{print $7}' || python3 -c "import socket; print(socket.gethostbyname(socket.gethostname()))" 2>/dev/null || echo "127.0.0.1") # Cross-platform IP address detection
 
 # Quick navigation add more here
 alias a="cd ~/git/aladdin"
