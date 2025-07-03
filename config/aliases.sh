@@ -6,6 +6,7 @@ alias cdg="cd ~/git"
 alias zrc="cd $DOT_DIR/zsh"
 alias dot="cd $DOT_DIR"
 alias jp="jupyter lab"
+alias wdc="pwd | pbcopy 2>/dev/null || pwd | xclip -selection clipboard 2>/dev/null || pwd"
 
 # -------------------------------------------------------------------
 # general
