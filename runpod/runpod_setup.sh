@@ -42,6 +42,7 @@ cd ..
 
 # Add CUDA environment to zsh config
 echo "export CUDA_VISIBLE_DEVICES=all" >> ~/.zshrc
+echo "export EDITOR=vim" >> ~/.zshrc
 zsh
 
 # 4) Setup github
