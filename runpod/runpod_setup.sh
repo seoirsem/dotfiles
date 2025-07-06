@@ -9,6 +9,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 source $HOME/.local/bin/env
 # Add uv to PATH permanently
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/.local/bin:$PATH"
 uv python install 3.11
 uv venv
 source .venv/bin/activate
@@ -21,6 +22,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
 echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
 echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc
+export NVM_DIR="$HOME/.nvm"
 \. "$HOME/.nvm/nvm.sh"
 nvm install 22
 node -v # Should print "v22.17.0".
@@ -39,6 +41,8 @@ chsh -s /usr/bin/zsh
 #use ssh - better for later
 git remote set-url origin git@github.com:seoirsem/dotfiles.git
 cd ..
+
+git config pull.rebase true
 
 # Add CUDA environment to zsh config
 echo "export CUDA_VISIBLE_DEVICES=all" >> ~/.zshrc
