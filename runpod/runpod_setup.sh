@@ -50,5 +50,6 @@ echo "export EDITOR=vim" >> ~/.zshrc
 zsh
 
 # 4) Setup github
+git config pull.rebase true
 echo "To setup github auth, run:"
 echo ./scripts/setup_github.sh "murray@seoirse.net" "Seoirse Murray"
