@@ -238,9 +238,10 @@ qupdate () {
 }
 
 # Only way to get a gpu is via queue
-if [ -z $CUDA_VISIBLE_DEVICES ]; then
-  export CUDA_VISIBLE_DEVICES=
-fi
+# Commented out - this was hiding GPUs on RunPod
+# if [ -z $CUDA_VISIBLE_DEVICES ]; then
+#   export CUDA_VISIBLE_DEVICES=
+# fi
 
 # -------------------------------------------------------------------
 # Cleaning processes
