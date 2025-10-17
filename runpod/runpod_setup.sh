@@ -44,9 +44,14 @@ cd ..
 
 git config pull.rebase true
 
-# Add CUDA environment to zsh config
-echo "export CUDA_VISIBLE_DEVICES=all" >> ~/.zshrc
-echo "export EDITOR=vim" >> ~/.zshrc
+# Add CUDA auto-detection and editor config to zsh config
+cat >> ~/.zshrc << 'EOF'
+# Auto-detect available GPUs and set CUDA_VISIBLE_DEVICES
+if command -v nvidia-smi &> /dev/null; then
+    export CUDA_VISIBLE_DEVICES=$(nvidia-smi --list-gpus | awk '{print NR-1}' | paste -sd,)
+fi
+export EDITOR=vim
+EOF
 zsh
 
 # 4) Setup github
