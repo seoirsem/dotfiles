@@ -13,6 +13,7 @@ alias cdn="cd ~/notebooks"
 alias b="cd ~/git/bladdin"
 alias c="cd ~/git/chunky-post-training"
 alias w="cd /workspace"
+alias cs="cd /workspace-vast/seoirsem/git/chunky-post-training"
 # Perish machines
 alias p1="cd /perish_aml01"
 alias p2="cd /perish_aml02"
@@ -124,7 +125,7 @@ tbadd() {
 
 # Short aliases
 full_queue='qstat -q "aml*.q@*" -f -u \*'
-alias q='qstat'
+alias q='echo "=== GPU Resources by Node ===" && sinfo -N --Format=NodeList,Gres,GresUsed | head -10 && echo && echo "=== Running Jobs with GPU Usage ===" && squeue -o "%.10i %.9P %.20j %.10u %.2t %.10M %.6D %b"'
 alias qtop='qalter -p 1024'
 alias qq=$full_queue # Display full queue
 alias gq='qstat -q aml-gpu.q -f -u \*' # Display just the gpu queues
