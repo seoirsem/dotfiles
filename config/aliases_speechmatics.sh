@@ -147,6 +147,148 @@ qlogin () {
     echo "Usage: qlogin <num_gpus>" >&2
   fi
 }
+
+qsub() {
+  # Generic Slurm job submission wrapper
+  # Usage: qsub <num_gpus> [options] -- <command>
+
+  if [ "$#" -lt 3 ]; then
+    echo "Usage: qsub <num_gpus> [options] -- <command>" >&2
+    echo "Options:" >&2
+    echo "  --work-dir DIR      Job script location (default: auto-generated)" >&2
+    echo "  --run-dir DIR       Directory to run command in (default: \$PWD)" >&2
+    echo "  --env-file FILE     Source env file before running" >&2
+    echo "  --preserve-env      Export all current env vars" >&2
+    echo "  Any other sbatch flags (--mem, --partition, etc.)" >&2
+    echo "" >&2
+    echo "Examples:" >&2
+    echo "  qsub 4 -- uv run python train.py" >&2
+    echo "  qsub 2 -- 'echo hello >> file.txt'  # Quote shell operators" >&2
+    echo "  qsub 8 --mem 1600G -- 'python train.py && echo done'" >&2
+    return 1
+  fi
+
+  local num_gpus=$1
+  shift
+
+  # Parse options
+  local sbatch_opts=""
+  local work_dir=""
+  local run_dir="$PWD"  # Default to current directory
+  local env_file=""
+  local preserve_env=false
+
+  while [[ "$1" != "--" && "$#" -gt 0 ]]; do
+    case "$1" in
+      --work-dir)
+        work_dir="$2"
+        shift 2
+        ;;
+      --run-dir)
+        run_dir="$2"
+        shift 2
+        ;;
+      --env-file)
+        env_file="$2"
+        shift 2
+        ;;
+      --preserve-env)
+        preserve_env=true
+        shift
+        ;;
+      *)
+        sbatch_opts="$sbatch_opts $1"
+        shift
+        ;;
+    esac
+  done
+
+  if [[ "$1" != "--" ]]; then
+    echo "Error: Missing '--' separator before command" >&2
+    return 1
+  fi
+  shift
+
+  # Store remaining args for the command
+  local command_args=("$@")
+
+  # Check if we need shell interpretation (contains redirects, pipes, etc.)
+  local needs_shell=false
+  local full_cmd="$*"
+  if [[ "$full_cmd" =~ [\>\<\|] || "$full_cmd" =~ "&&" || "$full_cmd" =~ "||" ]]; then
+    needs_shell=true
+  fi
+
+  # Default work directory for job script
+  if [[ -z "$work_dir" ]]; then
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    work_dir="/workspace-vast/$(whoami)/exp/${timestamp}_qsub"
+  fi
+
+  mkdir -p "$work_dir/logs"
+
+  # Create sbatch script
+  local script_file="$work_dir/job.sh"
+  cat > "$script_file" <<EOF
+#!/bin/bash
+#SBATCH --job-name=qsub_$(whoami)
+#SBATCH --output=$work_dir/logs/job.out
+#SBATCH --error=$work_dir/logs/job.err
+#SBATCH --gres=gpu:${num_gpus}
+#SBATCH --partition=high
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+$sbatch_opts
+
+# Change to run directory
+cd $run_dir
+
+EOF
+
+  # Add environment setup if requested
+  if [[ "$preserve_env" == true ]]; then
+    echo "# Preserve current environment" >> "$script_file"
+    env | grep -v '^_' | while IFS='=' read -r key value; do
+      # Skip some variables that shouldn't be preserved
+      if [[ ! "$key" =~ ^(SHLVL|PWD|OLDPWD|PS1|PROMPT)$ ]]; then
+        printf 'export %s=%q\n' "$key" "$value" >> "$script_file"
+      fi
+    done
+    echo "" >> "$script_file"
+  fi
+
+  if [[ -n "$env_file" ]]; then
+    echo "# Load environment file" >> "$script_file"
+    echo "export \$(grep -v '^#' $env_file | xargs)" >> "$script_file"
+    echo "" >> "$script_file"
+  fi
+
+  # Add the command
+  if [[ "$needs_shell" == true ]]; then
+    # Auto-wrap in bash -c for shell operators
+    printf 'bash -c %q' "$full_cmd" >> "$script_file"
+    echo "" >> "$script_file"
+  else
+    # No shell operators, write args normally
+    for arg in "${command_args[@]}"; do
+      # If arg contains spaces, quotes, or special chars, quote it
+      if [[ "$arg" =~ [[:space:]\'\"\$] ]]; then
+        printf '%q ' "$arg" >> "$script_file"
+      else
+        printf '%s ' "$arg" >> "$script_file"
+      fi
+    done
+    echo "" >> "$script_file"
+  fi
+
+  # Submit
+  local job_id=$(sbatch --parsable "$script_file")
+  echo "Submitted job $job_id"
+  echo "Run dir: $run_dir"
+  echo "Work dir: $work_dir"
+  echo "Logs: tail -f $work_dir/logs/job.out"
+  echo "Cancel: scancel $job_id"
+}
 qtail () {
   if [ "$#" -gt 0 ]; then
     l=$(qlog $@) && tail -f $l

@@ -21,6 +21,8 @@ setup_ssh_access() {
     cat > ~/.ssh/authorized_keys << 'EOF'
 # Your SSH key (from runpod)
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBTEPxGu3rom7b9jPh53v6ftHQQx97xmLEyOWXyEUgS3 murray@seoirse.net
+# slurm key:
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDvmrJmsDwy0bzKTv5u25MN7Va3bs9tX9r2bclVxc0om murray@seoirse.net
 # John's SSH key  
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDALrWAPgezK+pQSSpFT5KpeqAT5B9glizzHC5mpM0Zg jpl.hughes288@gmail.com
 EOF
