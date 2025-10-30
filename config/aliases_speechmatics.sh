@@ -137,28 +137,14 @@ alias wg="/home/seoirsem/git/dotfiles/runpod/slurm_gpu_visual.sh seoirsem"  # Vi
 
 # Queue functions
 qlogin () {
-  # Function to request gpu or cpu access
+  # Function to request GPU access via Slurm
   # example:
-  #    qlogin 2                request 2 gpus
-  #    qlogin 1 cpu            request 1 cpu slot
-  #    qlogin 1 aml-gpu.q@b5   request 1 gpu on b5
+  #    qlogin 2    request 2 gpus
+  #    qlogin 1    request 1 gpu
   if [ "$#" -eq 1 ]; then
-    /usr/bin/qlogin -now n -pe smp $1 -q aml-gpu.q -l gpu=$1 -N D_$(whoami)
-  elif [ "$#" -eq 2 ]; then
-    gpu_args=""
-    if [ "$2" = "cpu" ]; then
-      queue="aml-cpu.q"
-    elif  echo "$2" | grep -q "gpu" ; then
-      queue="$2"
-      gpu_args="gpu=$1"
-    else
-      queue="$2"
-    fi
-    /usr/bin/qlogin -now n -pe smp $1 -q $queue -l "$gpu_args" -N D_$(whoami)
+    srun --job-name=D_$(whoami) --partition=high --gres=gpu:$1 --pty zsh
   else
     echo "Usage: qlogin <num_gpus>" >&2
-    echo "Usage: qlogin <num_gpus> <queue>" >&2
-    echo "Usage: qlogin <num_slots> cpu" >&2
   fi
 }
 qtail () {
