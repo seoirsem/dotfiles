@@ -233,7 +233,7 @@ qsub() {
 #!/bin/bash
 #SBATCH --job-name=qsub_$(whoami)
 #SBATCH --output=$work_dir/logs/job.out
-#SBATCH --error=$work_dir/logs/job.err
+#SBATCH --error=$work_dir/logs/job.out
 #SBATCH --gres=gpu:${num_gpus}
 #SBATCH --partition=high
 #SBATCH --nodes=1
