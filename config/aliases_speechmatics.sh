@@ -257,6 +257,11 @@ EOF
     echo "" >> "$script_file"
   fi
 
+  # Auto-load .env from run directory if it exists (unless --env-file was specified)
+  if [[ -z "$env_file" && -f "$run_dir/.env" ]]; then
+    env_file="$run_dir/.env"
+  fi
+
   if [[ -n "$env_file" ]]; then
     echo "# Load environment file" >> "$script_file"
     echo "export \$(grep -v '^#' $env_file | xargs)" >> "$script_file"
