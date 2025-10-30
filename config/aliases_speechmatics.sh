@@ -133,7 +133,7 @@ alias gqf='qstat -q aml-gpu.q -u \* -r -F gpu | egrep -v "jobname|Master|Binding
 alias cq='qstat -q "aml-cpu.q@gpu*" -f -u \*' # Display just the cpu queues
 alias wq="watch qstat"
 alias wqq="watch $full_queue"
-alias wg="/home/seoirsem/git/dotfiles/runpod/slurm_gpu_visual.sh"  # Visual GPU status monitor for Slurm
+alias wg="/home/seoirsem/git/dotfiles/runpod/slurm_gpu_visual.sh seoirsem"  # Visual GPU status monitor for Slurm
 
 # Queue functions
 qlogin () {

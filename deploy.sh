@@ -50,6 +50,6 @@ echo "source $DOT_DIR/config/zshrc.sh" > $HOME/.zshrc
 
 # Add this line:
 echo "changing default shell to zsh"
-chsh -s $(which zsh)
+sudo chsh -s $(which zsh) $USER
 
 zsh
