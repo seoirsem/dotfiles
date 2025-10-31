@@ -162,10 +162,13 @@ qsub() {
     echo "  --preserve-env      Export all current env vars" >&2
     echo "  Any other sbatch flags (--mem, --partition, etc.)" >&2
     echo "" >&2
+    echo "Default resources:" >&2
+    echo "  --mem: (num_gpus * 80)G  # Override with --mem flag if needed" >&2
+    echo "" >&2
     echo "Examples:" >&2
     echo "  qsub 4 -- uv run python train.py" >&2
     echo "  qsub 2 -- 'echo hello >> file.txt'  # Quote shell operators" >&2
-    echo "  qsub 8 --mem 1600G -- 'python train.py && echo done'" >&2
+    echo "  qsub 8 --mem 1600G -- 'python train.py && echo done'  # Override memory" >&2
     return 1
   fi
 
@@ -240,7 +243,17 @@ qsub() {
 #SBATCH --qos=high
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-$sbatch_opts
+#SBATCH --mem=$((num_gpus * 80))G
+EOF
+
+  # Add additional sbatch options with proper #SBATCH prefix
+  if [[ -n "$sbatch_opts" ]]; then
+    for opt in $sbatch_opts; do
+      echo "#SBATCH $opt" >> "$script_file"
+    done
+  fi
+
+  cat >> "$script_file" <<EOF
 
 # Change to run directory
 cd $run_dir
