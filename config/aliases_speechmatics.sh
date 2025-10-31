@@ -14,6 +14,7 @@ alias b="cd ~/git/bladdin"
 alias c="cd ~/git/chunky-post-training"
 alias w="cd /workspace"
 alias cs="cd /workspace-vast/seoirsem/git/chunky-post-training"
+alias ws="cd /workspace-vast/seoirsem"
 # Perish machines
 alias p1="cd /perish_aml01"
 alias p2="cd /perish_aml02"
@@ -236,6 +237,7 @@ qsub() {
 #SBATCH --error=$work_dir/logs/job.out
 #SBATCH --gres=gpu:${num_gpus}
 #SBATCH --partition=high
+#SBATCH --qos=high
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 $sbatch_opts
