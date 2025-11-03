@@ -54,7 +54,8 @@ while true; do
 
         # Get jobs running on this node
         while IFS='|' read -r job_node user gpus; do
-            if [[ "$job_node" == "$node" && -n "$gpus" ]]; then
+            # Skip if gpus is not a valid number (e.g., "N/A")
+            if [[ "$job_node" == "$node" && "$gpus" =~ ^[0-9]+$ ]]; then
                 # Assign GPUs to this job
                 for ((j=0; j<gpus; j++)); do
                     if [ $gpu_idx -lt $total ]; then
