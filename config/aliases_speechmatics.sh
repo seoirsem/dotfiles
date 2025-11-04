@@ -143,7 +143,7 @@ qlogin () {
   #    qlogin 2    request 2 gpus
   #    qlogin 1    request 1 gpu
   if [ "$#" -eq 1 ]; then
-    srun --job-name=D_$(whoami) --partition=dev --qos=dev --gres=gpu:$1 --pty zsh -c "source /workspace-vast/seoirsem/git/dotfiles/config/zshrc.sh; source /workspace-vast/seoirsem/git/dotfiles/config/aliases_speechmatics.sh; exec zsh"
+    srun --job-name=D_$(whoami) --partition=dev,overflow --qos=dev --gres=gpu:$1 --pty zsh -c "source /workspace-vast/seoirsem/git/dotfiles/config/zshrc.sh; source /workspace-vast/seoirsem/git/dotfiles/config/aliases_speechmatics.sh; exec zsh"
   else
     echo "Usage: qlogin <num_gpus>" >&2
   fi

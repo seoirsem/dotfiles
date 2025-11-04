@@ -36,10 +36,10 @@ while true; do
     # Build entire output in a buffer first
     output=""
 
-    # Get job info: node, user, partition, and GPU count per job
+    # Get job info: node, user, partition, QoS, and GPU count per job
     # Store in temp file to avoid subshell issues
     tmpfile=$(mktemp)
-    squeue -t RUNNING -o "%i|%N|%u|%P|%b" --noheader | grep -v "^|" | sed 's/gres\/gpu://g' > "$tmpfile"
+    squeue -t RUNNING -o "%i|%N|%u|%P|%q|%b" --noheader | grep -v "^|" | sed 's/gres\/gpu://g' > "$tmpfile"
 
     # Get GPU info and build node array
     node_lines=()
@@ -66,7 +66,7 @@ while true; do
         gpu_idx=0
 
         # Get jobs running on this node
-        while IFS='|' read -r jobid job_node user partition gpus; do
+        while IFS='|' read -r jobid job_node user partition qos gpus; do
             if [[ "$job_node" == "$node" ]]; then
                 # If gpus is N/A, query scontrol for actual GPU allocation
                 if [[ "$gpus" == "N/A" ]]; then
@@ -78,11 +78,16 @@ while true; do
                     # Assign GPUs to this job
                     for ((j=0; j<gpus; j++)); do
                         if [ $gpu_idx -lt $total ]; then
-                            # Color logic: red for user's dev jobs, yellow for others' dev jobs
-                            # blue for user's non-dev jobs, green for others' non-dev jobs
-                            if [[ "$partition" == "dev" && "$user" == "$CURRENT_USER" ]]; then
+                            # Color logic: red/yellow for dev partition OR overflow with dev qos
+                            # blue/green for other jobs
+                            is_interactive=false
+                            if [[ "$partition" == "dev" ]] || [[ "$partition" == "overflow" && "$qos" == "dev" ]]; then
+                                is_interactive=true
+                            fi
+
+                            if [[ "$is_interactive" == true && "$user" == "$CURRENT_USER" ]]; then
                                 boxes+="${RED}█${RESET}"
-                            elif [[ "$partition" == "dev" ]]; then
+                            elif [[ "$is_interactive" == true ]]; then
                                 boxes+="${YELLOW}█${RESET}"
                             elif [[ "$user" == "$CURRENT_USER" ]]; then
                                 boxes+="${BLUE}█${RESET}"
