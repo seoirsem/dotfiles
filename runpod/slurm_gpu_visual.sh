@@ -4,6 +4,8 @@
 # ANSI codes
 GREEN='\033[92m'
 BLUE='\033[94m'
+YELLOW='\033[93m'
+RED='\033[91m'
 GRAY='\033[90m'
 BOLD='\033[1m'
 RESET='\033[0m'
@@ -34,10 +36,10 @@ while true; do
     # Build entire output in a buffer first
     output=""
 
-    # Get job info: node, user, and GPU count per job
+    # Get job info: node, user, partition, and GPU count per job
     # Store in temp file to avoid subshell issues
     tmpfile=$(mktemp)
-    squeue -t RUNNING -o "%N|%u|%b" --noheader | grep -v "^|" | sed 's/gres\/gpu://g' > "$tmpfile"
+    squeue -t RUNNING -o "%i|%N|%u|%P|%b" --noheader | grep -v "^|" | sed 's/gres\/gpu://g' > "$tmpfile"
 
     # Get GPU info and build node array
     node_lines=()
@@ -64,20 +66,33 @@ while true; do
         gpu_idx=0
 
         # Get jobs running on this node
-        while IFS='|' read -r job_node user gpus; do
-            # Skip if gpus is not a valid number (e.g., "N/A")
-            if [[ "$job_node" == "$node" && "$gpus" =~ ^[0-9]+$ ]]; then
-                # Assign GPUs to this job
-                for ((j=0; j<gpus; j++)); do
-                    if [ $gpu_idx -lt $total ]; then
-                        if [[ "$user" == "$CURRENT_USER" ]]; then
-                            boxes+="${BLUE}█${RESET}"
-                        else
-                            boxes+="${GREEN}█${RESET}"
+        while IFS='|' read -r jobid job_node user partition gpus; do
+            if [[ "$job_node" == "$node" ]]; then
+                # If gpus is N/A, query scontrol for actual GPU allocation
+                if [[ "$gpus" == "N/A" ]]; then
+                    gpus=$(scontrol show job "$jobid" 2>/dev/null | grep -oP 'AllocTRES=.*?gres/gpu=\K\d+' || echo "0")
+                fi
+
+                # Skip if gpus is still not a valid number
+                if [[ "$gpus" =~ ^[0-9]+$ ]]; then
+                    # Assign GPUs to this job
+                    for ((j=0; j<gpus; j++)); do
+                        if [ $gpu_idx -lt $total ]; then
+                            # Color logic: red for user's dev jobs, yellow for others' dev jobs
+                            # blue for user's non-dev jobs, green for others' non-dev jobs
+                            if [[ "$partition" == "dev" && "$user" == "$CURRENT_USER" ]]; then
+                                boxes+="${RED}█${RESET}"
+                            elif [[ "$partition" == "dev" ]]; then
+                                boxes+="${YELLOW}█${RESET}"
+                            elif [[ "$user" == "$CURRENT_USER" ]]; then
+                                boxes+="${BLUE}█${RESET}"
+                            else
+                                boxes+="${GREEN}█${RESET}"
+                            fi
+                            ((gpu_idx++))
                         fi
-                        ((gpu_idx++))
-                    fi
-                done
+                    done
+                fi
             fi
         done < "$tmpfile"
 

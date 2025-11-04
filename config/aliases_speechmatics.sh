@@ -126,7 +126,7 @@ tbadd() {
 
 # Short aliases
 full_queue='qstat -q "aml*.q@*" -f -u \*'
-alias q='echo "=== GPU Resources by Node ===" && sinfo -N --Format=NodeList,Gres,GresUsed | head -10 && echo && echo "=== Running Jobs with GPU Usage ===" && squeue -o "%.10i %.9P %.20j %.10u %.2t %.10M %.6D %b"'
+alias q='/home/seoirsem/git/dotfiles/runpod/slurm_queue_display.sh'
 alias qtop='qalter -p 1024'
 alias qq=$full_queue # Display full queue
 alias gq='qstat -q aml-gpu.q -f -u \*' # Display just the gpu queues
@@ -143,7 +143,7 @@ qlogin () {
   #    qlogin 2    request 2 gpus
   #    qlogin 1    request 1 gpu
   if [ "$#" -eq 1 ]; then
-    srun --job-name=D_$(whoami) --partition=high --gres=gpu:$1 --pty zsh
+    srun --job-name=D_$(whoami) --partition=dev --qos=dev --gres=gpu:$1 --pty zsh -c "source /workspace-vast/seoirsem/git/dotfiles/config/zshrc.sh; source /workspace-vast/seoirsem/git/dotfiles/config/aliases_speechmatics.sh; exec zsh"
   else
     echo "Usage: qlogin <num_gpus>" >&2
   fi
