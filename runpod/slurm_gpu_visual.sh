@@ -40,7 +40,8 @@ while true; do
     squeue -t RUNNING -o "%N|%u|%b" --noheader | grep -v "^|" | sed 's/gres\/gpu://g' > "$tmpfile"
 
     # Get GPU info and build node array
-    declare -a node_lines
+    node_lines=()
+    unset seen_nodes
     declare -A seen_nodes
     while read line; do
         node=$(echo "$line" | awk '{print $1}')
