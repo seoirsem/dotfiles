@@ -239,8 +239,8 @@ qsub() {
 #SBATCH --output=$work_dir/logs/job.out
 #SBATCH --error=$work_dir/logs/job.out
 #SBATCH --gres=gpu:${num_gpus}
-#SBATCH --partition=high
-#SBATCH --qos=high
+#SBATCH --partition=general
+#SBATCH --qos=general
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=$((num_gpus * 80))G
