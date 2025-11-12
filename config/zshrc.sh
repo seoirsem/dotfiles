@@ -3,7 +3,12 @@ DOT_DIR=$CONFIG_DIR/../
 
 ZSH_DISABLE_COMPFIX=true
 ZSH_THEME="powerlevel10k/powerlevel10k"
-ZSH=$HOME/.oh-my-zsh
+# Use /workspace-vast for cluster-wide access if it exists
+if [ -d "/workspace-vast/$(whoami)/.oh-my-zsh" ]; then
+    ZSH=/workspace-vast/$(whoami)/.oh-my-zsh
+else
+    ZSH=$HOME/.oh-my-zsh
+fi
 
 plugins=(zsh-autosuggestions zsh-syntax-highlighting zsh-completions zsh-history-substring-search)
 
@@ -13,10 +18,20 @@ source $CONFIG_DIR/p10k.zsh
 source $CONFIG_DIR/extras.sh
 
 # UV configuration
-export PATH="$HOME/.local/bin:$PATH"
+# Use /workspace-vast for cluster-wide access if it exists
+if [ -d "/workspace-vast/$(whoami)/.local/bin" ]; then
+    export PATH="/workspace-vast/$(whoami)/.local/bin:$PATH"
+else
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 
 # NVM configuration
-export NVM_DIR="$HOME/.nvm"
+# Use /workspace-vast for cluster-wide access if it exists
+if [ -d "/workspace-vast/$(whoami)/.nvm" ]; then
+    export NVM_DIR="/workspace-vast/$(whoami)/.nvm"
+else
+    export NVM_DIR="$HOME/.nvm"
+fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 

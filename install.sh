@@ -55,17 +55,23 @@ elif [ $machine == "Mac" ]; then
 fi
 
 # Setting up oh my zsh and oh my zsh plugins
-ZSH=~/.oh-my-zsh
+# Use /workspace-vast for cluster-wide access if it exists
+if [ -d "/workspace-vast/$(whoami)" ]; then
+    ZSH=/workspace-vast/$(whoami)/.oh-my-zsh
+else
+    ZSH=~/.oh-my-zsh
+fi
 ZSH_CUSTOM=$ZSH/custom
 if [ -d $ZSH ] && [ "$force" = "false" ]; then
     echo "Skipping download of oh-my-zsh and related plugins, pass --force to force redeownload"
 else
     echo " --------- INSTALLING DEPENDENCIES ⏳ ----------- "
     rm -rf $ZSH
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    # Pass ZSH variable to installer so it installs to the correct location
+    ZSH=$ZSH sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
     git clone https://github.com/romkatv/powerlevel10k.git \
-        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k 
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
 
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
         ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 
