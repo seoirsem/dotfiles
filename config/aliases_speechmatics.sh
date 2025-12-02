@@ -5,13 +5,13 @@
 HOST_IP_ADDR=$(ip route get 1 2>/dev/null | awk '{print $7}' || python3 -c "import socket; print(socket.gethostbyname(socket.gethostname()))" 2>/dev/null || echo "127.0.0.1") # Cross-platform IP address detection
 
 # Quick navigation add more here
-alias a="cd ~/git/aladdin"
-alias a2="cd ~/git/aladdin2"
+alias a="cd $GITDIR/aladdin"
+alias a2="cd $GITDIR/aladdin2"
 alias cde="cd /exp/$(whoami)"
 alias cdt="cd ~/tb"
 alias cdn="cd ~/notebooks"
-alias b="cd ~/git/bladdin"
-alias c="cd ~/git/chunky-post-training"
+alias b="cd $GITDIR/bladdin"
+alias c="cd $GITDIR/chunky-post-training"
 alias w="cd /workspace"
 alias cs="cd /workspace-vast/seoirsem/git/chunky-post-training"
 alias ws="cd /workspace-vast/seoirsem"
@@ -126,7 +126,7 @@ tbadd() {
 
 # Short aliases
 full_queue='qstat -q "aml*.q@*" -f -u \*'
-alias q='/home/seoirsem/git/dotfiles/runpod/slurm_queue_display.sh'
+alias q="$DOT_DIR/runpod/slurm_queue_display.sh"
 alias qtop='qalter -p 1024'
 alias qq=$full_queue # Display full queue
 alias gq='qstat -q aml-gpu.q -f -u \*' # Display just the gpu queues
@@ -134,7 +134,7 @@ alias gqf='qstat -q aml-gpu.q -u \* -r -F gpu | egrep -v "jobname|Master|Binding
 alias cq='qstat -q "aml-cpu.q@gpu*" -f -u \*' # Display just the cpu queues
 alias wq="watch qstat"
 alias wqq="watch $full_queue"
-alias wg="/home/seoirsem/git/dotfiles/runpod/slurm_gpu_visual.sh \$(whoami)"  # Visual GPU status monitor for Slurm
+alias wg="$DOT_DIR/runpod/slurm_gpu_visual.sh \$(whoami)"  # Visual GPU status monitor for Slurm
 
 # Queue functions
 qlogin () {
@@ -146,6 +146,19 @@ qlogin () {
     srun --job-name=D_$(whoami) --partition=dev,overflow --qos=dev --gres=gpu:$1 --pty zsh -c "source /workspace-vast/seoirsem/git/dotfiles/config/zshrc.sh; source /workspace-vast/seoirsem/git/dotfiles/config/aliases_speechmatics.sh; exec zsh"
   else
     echo "Usage: qlogin <num_gpus>" >&2
+  fi
+}
+
+qlogin_c () {
+  # Function to request CPU-only access on a specific node via Slurm
+  # example:
+  #    qlogin_c -n 3    request CPU on node-3
+  #    qlogin_c -n 1    request CPU on node-1
+  if [ "$1" = "-n" ] && [ "$#" -eq 2 ]; then
+    srun --job-name=D_$(whoami) --nodelist=node-$2 --gres=gpu:0 --partition=dev,overflow --qos=dev --pty zsh -c "source /workspace-vast/seoirsem/git/dotfiles/config/zshrc.sh; source /workspace-vast/seoirsem/git/dotfiles/config/aliases_speechmatics.sh; exec zsh"
+  else
+    echo "Usage: qlogin_c -n <node_number>" >&2
+    echo "Example: qlogin_c -n 3" >&2
   fi
 }
 

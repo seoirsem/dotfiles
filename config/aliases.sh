@@ -2,7 +2,7 @@
 # personal
 # -------------------------------------------------------------------
 
-alias cdg="cd ~/git"
+alias cdg="cd $GITDIR"
 alias zrc="cd $DOT_DIR/zsh"
 alias dot="cd $DOT_DIR"
 alias jp="jupyter lab"

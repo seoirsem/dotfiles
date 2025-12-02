@@ -1,6 +1,13 @@
 CONFIG_DIR=$(dirname $(realpath ${(%):-%x}))
 DOT_DIR=$CONFIG_DIR/../
 
+# Set GITDIR for cluster-wide access
+if [ -d "/workspace-vast/$(whoami)/git" ]; then
+    export GITDIR="/workspace-vast/$(whoami)/git"
+else
+    export GITDIR="$HOME/git"
+fi
+
 ZSH_DISABLE_COMPFIX=true
 ZSH_THEME="powerlevel10k/powerlevel10k"
 # Use /workspace-vast for cluster-wide access if it exists

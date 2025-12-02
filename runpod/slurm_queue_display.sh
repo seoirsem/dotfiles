@@ -5,14 +5,14 @@ echo "=== GPU Resources by Node ==="
 sinfo -N --Format=NodeList,Gres,GresUsed | head -10
 
 echo
-echo "=== Running Jobs with GPU Usage ==="
+echo "=== Running and Pending Jobs with GPU Usage ==="
 
 # Header
 printf "%-10s %-9s %-20s %-10s %-2s %-10s %-6s %-10s\n" \
   "JOBID" "PARTITION" "NAME" "USER" "ST" "TIME" "NODES" "GPUS"
 
 # Get job data
-squeue -t RUNNING -o "%i|%P|%.20j|%u|%t|%M|%D|%b" --noheader | while IFS='|' read -r jobid partition name user state time nodes tres; do
+squeue -t RUNNING,PENDING -o "%i|%P|%.20j|%u|%t|%M|%D|%b" --noheader | while IFS='|' read -r jobid partition name user state time nodes tres; do
     # Extract GPU count from TRES_PER_NODE
     if [[ "$tres" == "N/A" || "$tres" == "" ]]; then
         # Fallback to scontrol for dev jobs or jobs without TRES_PER_NODE
