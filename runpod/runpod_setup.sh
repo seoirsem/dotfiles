@@ -24,24 +24,7 @@ uv pip install ipykernel simple-gpu-scheduler # very useful on runpod with multi
 python -m ipykernel install --user --name=venv # so it shows up in jupyter notebooks within vscode
 
 # Install Claude Code
-# Use /workspace-vast for cluster-wide access if it exists
-if [ -d "/workspace-vast/$(whoami)" ]; then
-    export NVM_DIR="/workspace-vast/$(whoami)/.nvm"
-else
-    export NVM_DIR="$HOME/.nvm"
-fi
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-# Add nvm to zsh config permanently
-echo "export NVM_DIR=\"$NVM_DIR\"" >> ~/.zshrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
-echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc
-\. "$NVM_DIR/nvm.sh"
-nvm install 22
-node -v # Should print "v22.17.0".
-nvm current # Should print "v22.17.0".
-npm -v # Should print "10.9.2".
-
-npm install -g @anthropic-ai/claude-code
+curl -fsSL https://claude.ai/install.sh | bash
 
 # 3) Setup dotfiles and ZSH
 # Use /workspace-vast for cluster-wide access if it exists
