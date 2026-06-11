@@ -6,7 +6,37 @@ alias cdg="cd $GITDIR"
 alias zrc="cd $DOT_DIR/zsh"
 alias dot="cd $DOT_DIR"
 alias jp="jupyter lab"
-alias wdc="pwd | pbcopy 2>/dev/null || pwd | xclip -selection clipboard 2>/dev/null || pwd"
+# Copy text to the *local* clipboard via an OSC 52 escape sequence.
+# This rides up the terminal chain (tmux -> ssh -> iTerm2) and lands in the
+# Mac system clipboard, so it works on remote boxes with no pbcopy/xclip/X11.
+osc52_copy() {
+  local b64
+  b64=$(printf %s "$1" | base64 | tr -d '\n')
+  local seq="\033]52;c;${b64}\a"
+  # Inside tmux/screen, wrap so the sequence is passed straight to the outer
+  # terminal instead of being swallowed.
+  case "${TERM}${TMUX:+ tmux}" in
+    *tmux*) seq="\033Ptmux;\033${seq}\033\\" ;;
+    screen*) seq="\033P${seq}\033\\" ;;
+  esac
+  printf '%b' "$seq"
+}
+
+# wdc = "working dir copy": copy $PWD to the local clipboard (through tmux/ssh/iTerm2)
+wdc() {
+  osc52_copy "$PWD"
+  echo "copied to clipboard: $PWD"
+}
+
+# yank: copy text to the local clipboard. Takes an argument (yank "foo")
+# or reads stdin (git rev-parse HEAD | yank).
+yank() {
+  if [ "$#" -gt 0 ]; then
+    osc52_copy "$*"
+  else
+    osc52_copy "$(cat)"
+  fi
+}
 
 # -------------------------------------------------------------------
 # general
