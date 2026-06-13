@@ -42,6 +42,19 @@ fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+# Option+Arrow word navigation. iTerm2 emits 1;3 (Left Option = "Esc+") or 1;9
+# ("Natural Text Editing" preset) for Opt+arrow; neither was bound, so the keys
+# did nothing. Bind both forms so Opt+<-/-> jump words regardless of iTerm2 setting.
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+bindkey "^[[1;9C" forward-word
+bindkey "^[[1;9D" backward-word
+
+# Option+Backspace = delete previous word. "^[^?" (Meta-DEL) and "^W" are bound
+# by default; "^[^H" covers terminals whose Backspace sends ^H (BS) not ^? (DEL).
+bindkey "^[^?" backward-kill-word
+bindkey "^[^H" backward-kill-word
+
 # Fighter jet ASCII art
 echo "                             |"
 echo "                       --====|====--"
